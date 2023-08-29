@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Splitter</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            background-color: #009688;
+            color: #fff;
+            padding: 20px 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .person {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            width: 45%;
+        }
+
+        button {
+            background-color: #009688;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #007b68;
+        }
+
+        #result {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Expense Splitter</h1>
+    <div class="container">
+        <form id="expense-form">
+            <div class="person">
+                <input type="text" placeholder="Name" class="name" required>
+                <input type="number" placeholder="Amount Paid" class="amount" required>
+            </div>
+            <!-- Add three more divs for the other people -->
+            <div class="person">
+                <input type="text" placeholder="Name" class="name" required>
+                <input type="number" placeholder="Amount Paid" class="amount" required>
+            </div>
+            <div class="person">
+                <input type="text" placeholder="Name" class="name" required>
+                <input type="number" placeholder="Amount Paid" class="amount" required>
+            </div>
+            <div class="person">
+                <input type="text" placeholder="Name" class="name" required>
+                <input type="number" placeholder="Amount Paid" class="amount" required>
+            </div>
+            <button type="submit">Calculate</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('expense-form');
+            const resultDiv = document.getElementById('result');
+    
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+    
+                const names = document.querySelectorAll('.name');
+                const amounts = document.querySelectorAll('.amount');
+                
+                let totalAmount = 0;
+                let expenseDetails = '';
+                let expenses = [];
+    
+                for (let i = 0; i < 4; i++) {
+                    const name = names[i].value;
+                    const amount = parseFloat(amounts[i].value);
+    
+                    if (isNaN(amount)) {
+                        alert('Please enter valid amounts for all persons.');
+                        return;
+                    }
+    
+                    totalAmount += amount;
+                    expenseDetails += `${name} paid $${amount.toFixed(2)}<br>`;
+                    expenses.push({ name, amount });
+                }
+    
+                const equalShare = totalAmount / 4;
+                let resultMessage = '';
+    
+                for (let i = 0; i < 4; i++) {
+                    const name = expenses[i].name;
+                    const amount = expenses[i].amount;
+                    const share = equalShare - amount;
+    
+                    if (share < 0) {
+                        resultMessage += `${name} owes ${expenses[(i + 1) % 4].name} $${Math.abs(share.toFixed(2))}<br>`;
+                    } else if (share > 0) {
+                        resultMessage += `${name} should receive $${share.toFixed(2)} from ${expenses[(i + 1) % 4].name}<br>`;
+                    }
+                }
+    
+                resultDiv.innerHTML = `
+                    <h2>Expense Summary</h2>
+                    <p>Total Expenses: $${totalAmount.toFixed(2)}</p>
+                    <p>${expenseDetails}</p>
+                    <h3>Settlement:</h3>
+                    <p>${resultMessage}</p>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
+
+
